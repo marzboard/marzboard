@@ -1,0 +1,26 @@
+upstream back {
+    server back:80;
+}
+
+server {
+    listen 80;
+    server_name _;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl default_server;
+    server_name _;
+    ssl_certificate /etc/certs/fullchain.pem;
+    ssl_certificate_key /etc/certs/key.pem;
+
+    location /api/ {
+        proxy_pass http://back/;
+    }
+
+    location / {
+      root /usr/share/nginx/html;
+      index index.html;
+      try_files $uri $uri/ /index.html =404;
+    }
+}

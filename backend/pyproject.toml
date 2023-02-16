@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "MarzBoard"
+version = "0.1.0"
+description = "Marzban Node Manager"
+authors = ["Mohammad Jafari <m.jafari9877@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.92.0"
+uvicorn = {extras = ["standard"], version = "^0.20.0"}
+sqlalchemy = "^2.0.3"
+python-decouple = "^3.7"
+httpx = {extras = ["http2"], version = "^0.23.3"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
