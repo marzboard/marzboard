@@ -132,43 +132,6 @@ export const UsersTable: FC<UsersTableProps> = ({ user, ...props }) => {
                 }}
               >
                 <CopyToClipboard
-                  text={
-                    user.subscription_url.startsWith("/")
-                      ? window.location.origin + user.subscription_url
-                      : user.subscription_url
-                  }
-                  onCopy={() => {
-                    setCopied([0, true]);
-                  }}
-                >
-                  <div>
-                    <Tooltip
-                      label={
-                        copied[0] == 0 && copied[1]
-                          ? "Copied"
-                          : "Copy Subscription Link"
-                      }
-                      placement="top"
-                    >
-                      <IconButton
-                        aria-label="copy subscription link"
-                        bg="transparent"
-                        _dark={{
-                          _hover: {
-                            bg: "gray.700",
-                          },
-                        }}
-                      >
-                        {copied[0] == 0 && copied[1] ? (
-                          <CopiedIcon />
-                        ) : (
-                          <SubscriptionLinkIcon />
-                        )}
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                </CopyToClipboard>
-                <CopyToClipboard
                   text={proxyLinks}
                   onCopy={() => {
                     setCopied([1, true]);
