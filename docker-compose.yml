@@ -8,6 +8,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    restart: always
     ports:
       - "80:80"
       - "443:443"
@@ -15,3 +16,7 @@ services:
       - ./webserver/templates:/etc/nginx/templates
       - ./webserver/app.conf:/etc/nginx/conf.d/app.conf
       - ./webserver/certs:/etc/certs
+
+  redis:
+    image: redis:7
+    restart: always

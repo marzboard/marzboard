@@ -12,6 +12,7 @@ uvicorn = {extras = ["standard"], version = "^0.20.0"}
 sqlalchemy = "^2.0.3"
 python-decouple = "^3.7"
 httpx = {extras = ["http2"], version = "^0.23.3"}
+redis = "^4.5.1"
 
 
 [build-system]
