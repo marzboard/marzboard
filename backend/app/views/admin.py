@@ -20,7 +20,7 @@ async def get_token(marzban_url: str) -> str | None:
     credentials = MARZBAN_SERVERS.get(marzban_url)
     if not credentials or not credentials.get('username') or not credentials.get('password'):
         raise Exception(f"This Marzban server with domain {marzban_url} is not registered in "
-                        "MarzBoard; you should fill `marzban_servers.json` file to do so.")
+                        "MarzBoard; you should fill `nodes.json` file to do so.")
 
     async with httpx.AsyncClient(timeout=20) as client:
         client: httpx.AsyncClient

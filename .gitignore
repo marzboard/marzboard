@@ -27,7 +27,7 @@ dist-ssr
 **/.env
 
 # Secret file
-backend/marzban_servers.json
+backend/nodes.json
 
 # PyCache files
 **/*.pyc

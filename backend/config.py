@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 try:
-    with open('marzban_servers.json', 'r') as f:
+    with open('nodes.json', 'r') as f:
         MARZBAN_SERVERS = config("MARZBAN_SERVERS", default=json.loads(f.read()))
 except FileNotFoundError:
-    print('please fill the `marzban_servers.json` file')
+    print('please fill the `nodes.json` file')
 
 DATABASE_URL = config("DATABASE_URL", default="sqlite:///db.sqlite3")
