@@ -7,6 +7,12 @@ Marzban Node Manager and Users Dashboard for multiple nodes.
 - Correct gRPC configs (until Marzban fix it!) 
 
 # Getting Started
+
+## Prerequisites
+1. You need a domain/subdomain to run this project; because it uses TLS.
+2. A server from any provider
+
+## Setup
 1. Clone the repository on your server
 ```shell
 git clone https://github.com/marzboard/marzboard.git && cd marzboard 
@@ -41,7 +47,12 @@ The addresses should be exactly like the example.
 - Including each node's `username` and `password`
 
 --------
-4. Pull docker images and run the project:
+4. You **should** use TLS to run this project; so assure that your domain is prepared and run the `tls.sh` script:
+```shell
+bash tls.sh
+```
+--------
+5. Pull docker images and run the project:
 ```shell
 docker compose up -d
 ```
