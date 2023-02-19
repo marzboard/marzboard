@@ -1,6 +1,7 @@
 #!/bin/bash
 
-YELLOW="\033[1;33m"
+YELLOW='\033[1;33m'
+END_COLOR='\033[0m'
 
 SETUP_DIR=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 CACHE_FILE=".cache.marzboard"
@@ -15,7 +16,7 @@ if [ -f "$CACHE_FILE" ]; then
 fi
 
 if [ -z "$EMAIL" ] && [ -z "$DOMAIN" ]; then
-  echo "${YELLOW}Your ✉️  ️Email and 🌐 Domain will be stored in $CACHE_FILE file"
+  echo -e "${YELLOW}Your ✉️  ️Email and 🌐 Domain will be stored in $CACHE_FILE file${END_COLOR}"
 fi
 
 if [ -z "$EMAIL" ]; then
@@ -23,7 +24,7 @@ if [ -z "$EMAIL" ]; then
   read EMAIL
   echo $EMAIL >>"$CACHE_FILE"
 else
-  echo "   ${YELLOW}reusing your cached email: $EMAIL"
+  echo -e "   ${YELLOW}reusing your cached email: $EMAIL ${END_COLOR}"
 fi
 
 if [ -z "$DOMAIN" ]; then
@@ -31,11 +32,11 @@ if [ -z "$DOMAIN" ]; then
   read DOMAIN
   echo $DOMAIN >>"$CACHE_FILE"
 else
-  echo "   ${YELLOW}reusing your cached domain: $DOMAIN"
+  echo -e "   ${YELLOW}reusing your cached domain: $DOMAIN ${END_COLOR}"
 fi
 
 if [ ! -x "$(command -v docker)" ]; then
-  echo "${YELLOW}[INFO] Installing docker ..."
+  echo -e "${YELLOW}[INFO] Installing docker ... ${END_COLOR}"
   curl -fsSL https://get.docker.com | sh
 fi
 
