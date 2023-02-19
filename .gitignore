@@ -27,7 +27,10 @@ dist-ssr
 **/.env
 
 # Secret file
-backend/nodes.json
+nodes.json
 
 # PyCache files
 **/*.pyc
+
+# Cache file
+.cache.marzboard

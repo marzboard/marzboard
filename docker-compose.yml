@@ -5,7 +5,7 @@ services:
       context: ./backend
     restart: always
     volumes:
-      - ./backend/nodes.json:/app/backend/nodes.json
+      - ./nodes.json:/app/backend/nodes.json
 
   front:
     image: marzboard/frontend:latest

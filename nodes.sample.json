@@ -1,0 +1,14 @@
+{
+  "https://subdomain1.host.com": {
+    "username": "admin",
+    "password": "admin"
+  },
+  "https://subdomain2.host.com": {
+    "username": "admin",
+    "password": "admin"
+  },
+  "https://subdomain3.host.com": {
+    "username": "admin",
+    "password": "admin"
+  }
+}
