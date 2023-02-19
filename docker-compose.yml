@@ -1,10 +1,14 @@
 services:
   back:
+    image: marzboard/backend:latest
     build:
       context: ./backend
     restart: always
+    volumes:
+      - ./backend/nodes.json:/app/backend/nodes.json
 
   front:
+    image: marzboard/frontend:latest
     build:
       context: .
       dockerfile: ./Dockerfile
