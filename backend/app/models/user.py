@@ -23,5 +23,5 @@ class User(BaseModel):
     @validator('marzbanserver', check_fields=False)
     def validate_marzbanserver(cls, value):
         if value and value not in MARZBAN_SERVERS:
-            raise ValueError('Wrong Server')
+            return None
         return value
