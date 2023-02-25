@@ -18,7 +18,8 @@ class User(BaseModel):
             raise ValueError('Username only can be '
                              '3 to 32 characters and contain a-z, '
                              '0-9, and underscores in between.')
-        return value
+
+        return value.lower()
 
     @validator('marzbanserver', check_fields=False)
     def validate_marzbanserver(cls, value):
