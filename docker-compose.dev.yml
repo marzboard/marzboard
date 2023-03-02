@@ -3,9 +3,10 @@ services:
     image: marzboard/backend:latest
     build:
       context: ./backend
-      target: "production"
+      target: "development"
     restart: always
     volumes:
+      - ./backend:/app
       - ./nodes.json:/app/nodes.json
 
   front:
@@ -13,14 +14,20 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      target: "production"
+      target: "development"
     restart: always
     ports:
-      - "80:80"
-      - "443:443"
+      - 3010:3010
     volumes:
-      - ./webserver/prod.conf:/etc/nginx/conf.d/prod.conf
-      - ./webserver/certs:/etc/certs
+      - ./frontend:/app
+
+  server:
+    image: nginx:stable-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./webserver/dev.conf:/etc/nginx/conf.d/default.conf
+    command: ["nginx", "-g", "daemon off;"]
 
   redis:
     image: redis:7
