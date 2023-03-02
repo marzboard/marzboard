@@ -12,4 +12,9 @@ export default defineConfig({
     svgr(),
     splitVendorChunkPlugin(),
   ],
+  server: {
+    hmr: {
+      port: 3010,
+    },
+  },
 });
