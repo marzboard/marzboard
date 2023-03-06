@@ -1,14 +1,17 @@
 {
-  "https://subdomain1.host.com": {
+  "https://node1-api.host.com": {
     "username": "admin",
-    "password": "admin"
+    "password": "admin",
+    "node_domain": "https://node1.host.com"
   },
-  "https://subdomain2.host.com": {
+  "https://node2-api.host.com": {
     "username": "admin",
-    "password": "admin"
+    "password": "admin",
+    "node_domain": "https://node2.host.com"
   },
-  "https://subdomain3.host.com": {
+  "https://node3-api.host.com": {
     "username": "admin",
-    "password": "admin"
+    "password": "admin",
+    "node_domain": "https://node3.host.com"
   }
 }

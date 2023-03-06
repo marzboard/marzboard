@@ -23,28 +23,15 @@ git clone https://github.com/marzboard/marzboard.git && cd marzboard
 cp nodes.sample.json nodes.json
 ```
 --------
-3. Edit the `nodes.json` file and add all your Marzban servers like the following example:
-```shell
-{
-  "https://subdomain1.host.com": {
-    "username": "admin",
-    "password": "admin"
-  },
-  "https://subdomain2.host.com": {
-    "username": "admin",
-    "password": "admin"
-  },
-  "https://subdomain3.host.com": {
-    "username": "admin",
-    "password": "admin"
-  }
-}
-```
+3. Edit the `nodes.json` file and add all your Marzban servers like the example.
 
-The addresses should be exactly like the example. 
-- No trailing slashes
-- Containing the URI schema (`https`/`http`)
-- Including each node's `username` and `password`
+The addresses should be exactly like the example.
+- The keys are the marzban node's domain. It is highly recommended using another domain than your VPN service; so if your VPN service's domain is censored in the future, the censorship does not affect on your api domain.
+- The `node_domain` value is the service's domain which is currently being used by users VPN clients
+- If your `node_domain` and the keys are the same, it's ok!
+- No trailing slashes in the key paths
+- Keys should contain the URI schema (`https`/`http`)
+- Including each node's `username` and `password` in the values
 
 --------
 4. You **should** use TLS to run this project; so assure that your domain is prepared and run the `tls.sh` script:
