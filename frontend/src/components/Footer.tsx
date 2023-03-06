@@ -55,8 +55,8 @@ export const Footer: FC<BoxProps> = (props) => {
         fontSize="xs"
       >
         Made with ❤️ in{" "}
-        <Link color="blue.400" href="#">
-          MarzBoard
+        <Link color="blue.400" href="https://github.com/marzboard/marzboard">
+          Marzboard
         </Link>
       </Text>
       <IconButton

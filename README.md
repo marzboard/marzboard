@@ -52,7 +52,15 @@ The addresses should be exactly like the example.
 bash tls.sh
 ```
 --------
-5. Pull docker images and run the project:
+5. *OPTIONAL:* If you want to log in as an admin in marzboard, you can create a file named `admins.json` like the following:
+```shell
+cp admins.sample.json admins.json
+```
+
+Edit the contents of the `admins.json` file. The username & passwords in this file is not depended on anything; put anything you desire as your credentials for the admin panel. Be careful about them and choose a strong password.
+
+--------
+6. Pull docker images and run the project:
 ```shell
 docker compose up -d
 ```
@@ -79,3 +87,6 @@ So, a user in any of the marzban servers included in `nodes.json` can log into t
 
 ## Use Username & Password instead of copying multiple configs
 From now on, you can tell the username and password to users, and they can copy configs themselves from the board.
+
+## Admin Page
+If you log in with any of the credentials in `admins.json` file, you will see the admin panel which is under development and will have more features in future.

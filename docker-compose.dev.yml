@@ -8,6 +8,7 @@ services:
     volumes:
       - ./backend:/app
       - ./nodes.json:/app/nodes.json
+      - ./admins.json:/app/admins.json
 
   front:
     image: marzboard/frontend:latest

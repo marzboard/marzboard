@@ -67,10 +67,13 @@ export const Login: FC = () => {
         marzbanserver: getMarzbanServer(),
       },
     })
-      .then(({ marzbanserver, access_token }) => {
-        setMarzbanServer(marzbanserver);
+      .then(({ is_admin, access_token, marzbanserver }) => {
         setAuthToken(access_token);
-        navigate("/");
+        if (is_admin === true) navigate("/admin");
+        else {
+          setMarzbanServer(marzbanserver);
+          navigate("/");
+        }
       })
       .catch((err) => {
         if (err.data?.detail) {

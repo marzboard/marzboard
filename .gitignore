@@ -28,6 +28,7 @@ dist-ssr
 
 # Secret file
 nodes.json
+admins.json
 webserver/certs/
 
 # PyCache files

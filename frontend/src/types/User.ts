@@ -36,3 +36,8 @@ export type User = {
   links: string[];
   subscription_url: string;
 } & Record<string, any>;
+
+export type UserCreate = Pick<
+  User,
+  "proxies" | "expire" | "data_limit" | "username" | "data_limit_reset_strategy"
+>;

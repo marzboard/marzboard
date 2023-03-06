@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import {
   Text,
   Box,
@@ -15,6 +15,8 @@ import {
   HStack,
   chakra,
   CardHeader,
+  Select,
+  Divider,
 } from "@chakra-ui/react";
 import { Footer } from "components/Footer";
 import { fetch } from "service/http";
@@ -24,7 +26,12 @@ import { useNavigate } from "react-router-dom";
 import { UserBadge } from "../components/UserBadge";
 import { formatBytes } from "utils/format";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { CheckIcon, ClipboardIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowPathIcon,
+  CheckIcon,
+  ClipboardIcon,
+} from "@heroicons/react/24/outline";
+import { UsersTable } from "../components/UsersTable";
 
 const iconProps = {
   baseStyle: {
@@ -146,22 +153,37 @@ const UserData: FC<UserDataProps> = ({ user, ...props }) => {
   );
 };
 
-export const Dashboard: FC = () => {
-  const [user, setUser] = useState<User>();
+const ReloadIcon = chakra(ArrowPathIcon, iconProps);
+
+export const Admin: FC = () => {
+  const [data, setData] = useState<any>();
+  const [activeTab, setActiveTab] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  useEffect(() => {
-    fetch("/info/")
-      .then(setUser)
-      .catch(() => {
-        navigate("/login", { replace: true });
+  const [isRefetching, setIsRefetching] = useState(false);
+
+  const refetchUsers = () => {
+    setIsRefetching(true);
+    fetch("/admin/")
+      .then((r) => {
+        setData(r);
+        const k = Object.keys(r.nodes)[0];
+        setActiveTab(k);
+      })
+      .catch((err) => {
+        if (err.status === 403) navigate("/login");
       })
       .finally(() => {
         setIsLoading(false);
+        setIsRefetching(false);
       });
+  };
+
+  useEffect(() => {
+    refetchUsers();
   }, []);
 
-  if (isLoading || !user)
+  if (isLoading || !data)
     return (
       <Center h="100vh">
         <Spinner size="xl" />
@@ -170,10 +192,35 @@ export const Dashboard: FC = () => {
 
   return (
     <VStack justifyContent="space-between" minH="100vh" p="6">
-      <UserData user={user} mt={20} />
+      <HStack>
+        <IconButton
+          aria-label="refresh users"
+          isDisabled={isRefetching}
+          isLoading={isRefetching}
+          onClick={refetchUsers}
+          variant="outline"
+        >
+          <ReloadIcon />
+        </IconButton>
+        <Select
+          mb={4}
+          maxW={60}
+          onChange={(d) => {
+            setActiveTab(d.target.value);
+          }}
+        >
+          {Object.keys(data.nodes).map((k) => (
+            <option value={k}>{k}</option>
+          ))}
+        </Select>
+      </HStack>
+      <Divider pt={4} />
+      <Box w="full" py={4}>
+        <UsersTable users={data.nodes[activeTab].users} />
+      </Box>
       <Footer />
     </VStack>
   );
 };
 
-export default Dashboard;
+export default Admin;

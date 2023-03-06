@@ -1,8 +1,10 @@
 import asyncio
+import json
 import re
 from functools import partial
 from json import JSONDecodeError
 from typing import Awaitable, Literal
+from uuid import uuid4
 
 import httpx
 from fastapi import status, Response, Header
@@ -11,11 +13,11 @@ from fastapi.responses import JSONResponse
 from app import app
 from app.models.user import User
 from app.utils.cache import async_cache
-from app.utils.time import MINUTE
-from config import MARZBAN_SERVERS
+from app.utils.time import HOUR
+from config import MARZBAN_SERVERS, redis_connection
 
 
-@async_cache(timeout=15 * MINUTE)
+@async_cache(timeout=8 * HOUR)
 async def get_token(marzban_url: str) -> str | None:
     credentials = MARZBAN_SERVERS.get(marzban_url)
     if not credentials or not credentials.get('username') or not credentials.get('password'):
@@ -63,15 +65,26 @@ async def http_get_user_from(url: str, user: User):
                 if user.password in valid_passwords:
                     return response
 
-            print(f'incorrect password {url} - {user.password} - {user.username}')
-            return False
+            print(f'[BOARD ERROR] incorrect password {url} - {user.password} - {user.username}')
+
         except (JSONDecodeError, TypeError, IndexError):
-            print(f'Not found user {url}:', response)
-            return False
+            print(f'[BOARD ERROR] Not found user {url}:', response)
+
+        return False
 
 
 @app.post("/login/")
 async def login(user: User, response: Response):
+    if user.is_admin:
+        token = uuid4().hex
+        ok = await redis_connection.set(token, f'{user.username}:{user.password}')
+        if not ok:
+            print('[BOARD ERROR] Redis is not ok!')
+            return JSONResponse(content={'detail': "server error"}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return {
+            "is_admin": True,
+            "access_token": token,
+        }
     responses_promise: list[Awaitable[Literal[False] | httpx.Response]] = [
         http_get_user_from(url, user) for url in MARZBAN_SERVERS
     ]
@@ -146,3 +159,47 @@ async def find_sni(links):
         None
     )
     return matcher
+
+
+async def http_get_all_users_from(url: str):
+    async with httpx.AsyncClient(timeout=20) as client:
+        client: httpx.AsyncClient
+        try:
+            access_token = await get_token(url)
+            response = await client.get(f"{url}/api/users", headers={
+                "Authorization": f"Bearer {access_token}"
+            })
+            return response
+        except httpx.ConnectError as e:
+            print('[BOARD ERROR] httpx.ConnectError', e)
+        except json.JSONDecodeError as e:
+            print('[BOARD ERROR] json decode error', e)
+
+        return None
+
+
+@app.get("/admin/")
+async def admin(response: Response, authorization: str | None = Header()):
+    creds = await redis_connection.get(authorization)
+    if not creds or ":" not in creds:
+        return JSONResponse(content={'detail': "permission denied"}, status_code=status.HTTP_403_FORBIDDEN)
+    username, password = creds.split(':')
+    user = User.parse_obj({"username": username, "password": password})
+    if not user.is_admin:
+        return JSONResponse(content={'detail': "permission denied"}, status_code=status.HTTP_403_FORBIDDEN)
+
+    responses_promise: list[Awaitable[Literal[None] | httpx.Response]] = [
+        http_get_all_users_from(url) for url in MARZBAN_SERVERS
+    ]
+    response_list = await asyncio.gather(*responses_promise)
+    results: list[httpx.Response] = list(filter(bool, response_list))
+    if not results:
+        return JSONResponse(content={'detail': "no users available"}, status_code=status.HTTP_404_NOT_FOUND)
+
+    return {
+        "nodes": {
+            r.url.host: {
+                "users": r.json()
+            } for r in results
+        }
+    }
