@@ -5,6 +5,8 @@ Marzban Node Manager and Users Dashboard for multiple nodes.
 - Connect to multiple Marzban nodes
 - Dashboard for users to see their usages and copy their configs
 - Correct gRPC configs (until Marzban fix it!) 
+- Censorship Status checking button for users (so they can check if their domain is censored or not)
+- Admin panel to show all users in each marzban server
 
 # Run the project
 
