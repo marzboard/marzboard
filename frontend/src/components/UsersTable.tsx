@@ -51,7 +51,6 @@ export const UsersTable: FC<UsersTableProps> = ({ users, ...props }) => {
               <Th>Username</Th>
               <Th>status</Th>
               <Th>banding usage</Th>
-              <Th>lifetime usage</Th>
               <Th></Th>
             </Tr>
           </Thead>
@@ -69,6 +68,8 @@ export const UsersTable: FC<UsersTableProps> = ({ users, ...props }) => {
                     minW={["150px", null, null, "200px"]}
                   >
                     <UsageSlider
+                      totalUsedTraffic={user.lifetime_used_traffic}
+                      dataLimitResetStrategy={user.data_limit_reset_strategy}
                       used={user.used_traffic}
                       total={user.data_limit}
                       colorScheme={
@@ -76,7 +77,6 @@ export const UsersTable: FC<UsersTableProps> = ({ users, ...props }) => {
                       }
                     />
                   </Td>
-                  <Td>{formatBytes(user.lifetime_used_traffic)}</Td>
                   <Td>
                     <HStack
                       justifyContent="flex-end"

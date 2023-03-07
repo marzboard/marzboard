@@ -35,7 +35,7 @@ const iconProps = {
 };
 const CopyIcon = chakra(ClipboardIcon, iconProps);
 const CopiedIcon = chakra(CheckIcon, iconProps);
-const FilteringIcon = chakra(ShieldExclamationIcon, iconProps);
+const CensorshipCheckIcon = chakra(ShieldExclamationIcon, iconProps);
 
 type DataRowProps = { fieldName: string } & BoxProps;
 const DataRow: FC<DataRowProps> = ({ children, fieldName, ...props }) => (
@@ -48,7 +48,10 @@ const DataRow: FC<DataRowProps> = ({ children, fieldName, ...props }) => (
     alignItems="center"
     justifyContent="space-between"
     _hover={{
-      backgroundColor: "#ffffff11",
+      backgroundColor: "gray.100",
+      _dark: {
+        backgroundColor: "gray.800",
+      },
     }}
     {...props}
   >
@@ -74,14 +77,15 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
 
   const proxyLinks = user.links.join("\r\n");
 
-  const [checkingFilteringStatus, setCheckingFilteringStatus] = useState(false);
-  const checkFilteringStatus = () => {
-    setCheckingFilteringStatus(true);
+  const [checkingCensorshipStatus, setCheckingCensorshipStatus] =
+    useState(false);
+  const checkCensorshipStatus = () => {
+    setCheckingCensorshipStatus(true);
     fetch("/censorship-status/")
       .then(({ is_censored }) => {
         if (is_censored)
           toast({
-            title: "Your node is Filtered",
+            title: "Your node is Censored :(",
             description:
               "Your node is censored by the government! We are trying to fix the problem. Thanks for your patience.",
             status: "error",
@@ -90,7 +94,7 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
           });
         else
           toast({
-            title: "Your node is Working",
+            title: "Your node is Working :)",
             description:
               "Your node is working right now. If you have encountered any problems in your connection, " +
               "please contact to the support team.",
@@ -120,14 +124,23 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
           });
       })
       .finally(() => {
-        setCheckingFilteringStatus(false);
+        setCheckingCensorshipStatus(false);
       });
   };
 
   return (
     <VStack w="360px">
-      <Card border="1px dashed" borderColor="primary.100" w="full" {...props}>
-        <CardBody>
+      <Card
+        w="full"
+        _dark={{
+          bg: "gray.750",
+          border: "2px solid",
+          borderColor: "gray.700",
+        }}
+        mb={8}
+        {...props}
+      >
+        <CardBody px="0">
           <VStack as="ul" spacing={0} listStyleType="none">
             <DataRow fieldName="username">
               <Text fontWeight="bold">{user.username}</Text>
@@ -138,6 +151,8 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
             <DataRow fieldName="usage">
               <Box textAlign="center" minW="100px">
                 <UsageSlider
+                  totalUsedTraffic={user.lifetime_used_traffic}
+                  dataLimitResetStrategy={user.data_limit_reset_strategy}
                   used={user.used_traffic}
                   total={user.data_limit}
                   colorScheme={user.status === "limited" ? "red" : "primary"}
@@ -145,11 +160,6 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
                   mr="0.4rem"
                 />
               </Box>
-            </DataRow>
-            <DataRow fieldName="lifetime traffic">
-              <Text fontWeight="bold">
-                {formatBytes(user.lifetime_used_traffic)}
-              </Text>
             </DataRow>
             <Box pt={10}>
               <HStack
@@ -199,15 +209,16 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
       </Card>
       <Tooltip label="If your connection is not stable, with this button you can check if your connection is censored by the government or not.">
         <Button
-          leftIcon={<FilteringIcon />}
+          leftIcon={<CensorshipCheckIcon />}
           variant="outline"
           colorScheme="red"
           w="full"
-          onClick={checkFilteringStatus}
-          isDisabled={checkingFilteringStatus}
-          isLoading={checkingFilteringStatus}
+          onClick={checkCensorshipStatus}
+          isDisabled={checkingCensorshipStatus}
+          isLoading={checkingCensorshipStatus}
+          loadingText="Checking..."
         >
-          Show Filtering Status
+          Show Censorship Status
         </Button>
       </Tooltip>
     </VStack>

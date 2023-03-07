@@ -1,8 +1,10 @@
 import {
+  HStack,
   Slider,
   SliderFilledTrack,
   SliderProps,
   SliderTrack,
+  Spacer,
   Text,
 } from "@chakra-ui/react";
 import { FC } from "react";
@@ -18,9 +20,18 @@ const iconProps = {
 type UsageSliderProps = {
   used: number;
   total: number | null;
+  dataLimitResetStrategy: string | null;
+  totalUsedTraffic: number;
 } & SliderProps;
+
 export const UsageSlider: FC<UsageSliderProps> = (props) => {
-  const { used, total, ...restOfProps } = props;
+  const {
+    used,
+    total,
+    dataLimitResetStrategy,
+    totalUsedTraffic,
+    ...restOfProps
+  } = props;
   const isUnlimited = total === 0 || total === null;
   const isReached = !isUnlimited && (used / total) * 100 >= 100;
   return (
@@ -35,7 +46,8 @@ export const UsageSlider: FC<UsageSliderProps> = (props) => {
           <SliderFilledTrack borderRadius="full" />
         </SliderTrack>
       </Slider>
-      <Text
+      <HStack
+        justifyContent="space-between"
         fontSize="xs"
         fontWeight="medium"
         color="gray.600"
@@ -43,15 +55,21 @@ export const UsageSlider: FC<UsageSliderProps> = (props) => {
           color: "gray.400",
         }}
       >
-        {formatBytes(used)} /{" "}
-        {isUnlimited ? (
-          <Text as="span" fontFamily="system-ui">
-            ∞
-          </Text>
-        ) : (
-          formatBytes(total)
-        )}
-      </Text>
+        <Text>
+          {formatBytes(used)} /{" "}
+          {isUnlimited ? (
+            <Text as="span" fontFamily="system-ui">
+              ∞
+            </Text>
+          ) : (
+            formatBytes(total) +
+            (dataLimitResetStrategy && dataLimitResetStrategy !== "no_reset"
+              ? " per " + dataLimitResetStrategy
+              : "")
+          )}
+        </Text>
+        <Text>Total: {formatBytes(totalUsedTraffic)}</Text>
+      </HStack>
     </>
   );
 };

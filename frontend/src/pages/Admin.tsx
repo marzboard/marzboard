@@ -21,6 +21,7 @@ import {
   ClipboardIcon,
 } from "@heroicons/react/24/outline";
 import { UsersTable } from "../components/UsersTable";
+import { User } from "../types/User";
 
 const iconProps = {
   baseStyle: {
@@ -55,9 +56,20 @@ const DataRow: FC<DataRowProps> = ({ children, fieldName, ...props }) => (
 
 const ReloadIcon = chakra(ArrowPathIcon, iconProps);
 
+interface IMarzbanNode {
+  users: {
+    total: number;
+    users: User[];
+  };
+}
+
+interface IAdminAPIResponse {
+  nodes: Record<string, IMarzbanNode>;
+}
+
 export const Admin: FC = () => {
-  const [data, setData] = useState<any>();
-  const [activeTab, setActiveTab] = useState<any>();
+  const [data, setData] = useState<IAdminAPIResponse>();
+  const [activeTab, setActiveTab] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [isRefetching, setIsRefetching] = useState(false);
@@ -115,9 +127,11 @@ export const Admin: FC = () => {
         </Select>
       </HStack>
       <Divider pt={4} />
-      <Box w="full" py={4}>
-        <UsersTable users={data.nodes[activeTab].users} />
-      </Box>
+      {data.nodes[activeTab] && (
+        <Box w="full" py={4}>
+          <UsersTable users={data.nodes[activeTab].users.users} />
+        </Box>
+      )}
       <Footer />
     </VStack>
   );
