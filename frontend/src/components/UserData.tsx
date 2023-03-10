@@ -1,25 +1,26 @@
 import { FC, useEffect, useState } from "react";
 import {
   Box,
-  Center,
   BoxProps,
   Button,
   Card,
   CardBody,
   CardProps,
   chakra,
+  Divider,
   HStack,
   IconButton,
   Text,
   Tooltip,
-  VStack,
   useToast,
+  VStack,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 import { fetch } from "service/http";
 import { UsageSlider } from "./UsageSlider";
 import { User } from "types/User";
 import { UserBadge } from "./UserBadge";
-import { formatBytes } from "utils/format";
 import CopyToClipboard from "react-copy-to-clipboard";
 import {
   CheckIcon,
@@ -76,7 +77,6 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
   }, [copied]);
 
   const proxyLinks = user.links.join("\r\n");
-
   const [checkingCensorshipStatus, setCheckingCensorshipStatus] =
     useState(false);
   const checkCensorshipStatus = () => {
@@ -172,13 +172,13 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
                 <CopyToClipboard
                   text={proxyLinks}
                   onCopy={() => {
-                    setCopied([1, true]);
+                    setCopied([0, true]);
                   }}
                 >
                   <div>
                     <Tooltip
                       label={
-                        copied[0] == 1 && copied[1] ? "Copied" : "Copy Configs"
+                        copied[0] === 0 && copied[1] ? "Copied" : "Copy Configs"
                       }
                       placement="top"
                     >
@@ -193,7 +193,7 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
                           },
                         }}
                       >
-                        {copied[0] == 1 && copied[1] ? (
+                        {copied[0] === 0 && copied[1] ? (
                           <CopiedIcon w="40px" h="40px" />
                         ) : (
                           <CopyIcon w="40px" h="40px" />
@@ -204,6 +204,58 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
                 </CopyToClipboard>
               </HStack>
             </Box>
+            <Divider pt={4} />
+            <VStack>
+              <Text px={4} mt={2}>
+                Copy the configs separately
+              </Text>
+              <VStack>
+                <Wrap>
+                  {user.links.map((proxy, i) => (
+                    <WrapItem>
+                      <CopyToClipboard
+                        text={proxy}
+                        onCopy={() => {
+                          setCopied([i + 1, true]);
+                        }}
+                      >
+                        <div>
+                          <Tooltip
+                            label={
+                              copied[0] === i + 1 && copied[1]
+                                ? "Copied"
+                                : decodeURI(proxy.split("#")[1])
+                            }
+                            placement="top"
+                          >
+                            <IconButton
+                              w="40px"
+                              h="40px"
+                              aria-label="copy config"
+                              variant="outline"
+                              disabled={Boolean(
+                                copied[0] === i + 1 && copied[1]
+                              )}
+                              _dark={{
+                                _hover: {
+                                  bg: "gray.800",
+                                },
+                              }}
+                            >
+                              {copied[0] === i + 1 && copied[1] ? (
+                                <CopiedIcon w="22px" h="22px" />
+                              ) : (
+                                <CopyIcon w="22px" h="22px" />
+                              )}
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                      </CopyToClipboard>
+                    </WrapItem>
+                  ))}
+                </Wrap>
+              </VStack>
+            </VStack>
           </VStack>
         </CardBody>
       </Card>
