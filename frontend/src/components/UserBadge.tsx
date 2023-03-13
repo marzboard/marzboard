@@ -27,15 +27,19 @@ const status: {
 } = {
   active: {
     statusColor: "green",
-    bandWidthColor: "green",
+    bandWidthColor: "primary",
   },
   expired: {
-    statusColor: "gray",
-    bandWidthColor: "gray",
+    statusColor: "orange",
+    bandWidthColor: "orange",
   },
   limited: {
     statusColor: "red",
     bandWidthColor: "red",
+  },
+  disabled: {
+    statusColor: "gray",
+    bandWidthColor: "gray",
   },
 };
 type UserStatusProps = {
