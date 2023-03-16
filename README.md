@@ -60,9 +60,9 @@ When you run the project properly, you will have a login page in your domain for
 ## The way to login into marzboard
 User's username is their marzban username and their password is the **first 8 characters** of their configs.
 
-For example, if a user has a VMESS or VLESS config:
+For example, if a user has a VLESS config:
 ```text
-vmess://11111111-0000-0000-0000-000000000000@...
+vless://11111111-0000-0000-0000-000000000000@...
 ```
 
 The _Ones_ are the password part.
@@ -71,6 +71,8 @@ It is the same for trojan configs:
 ```text
 trojan://1111111100000000000000@...
 ```
+
+For VMESS it's a little different; the user's password is the first 8 characters of their config's `UUID`. So you have to either import the config into a vpn client like v2rayng and see the UUID field, or base64-decode the config and see the content.
 
 So, a user in any of the marzban servers included in `nodes.json` can log into their board.
 
