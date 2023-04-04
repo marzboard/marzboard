@@ -69,7 +69,7 @@ interface IAdminAPIResponse {
 
 export const Admin: FC = () => {
   const [data, setData] = useState<IAdminAPIResponse>();
-  const [activeTab, setActiveTab] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [isRefetching, setIsRefetching] = useState(false);
@@ -79,8 +79,6 @@ export const Admin: FC = () => {
     fetch("/admin/")
       .then((r) => {
         setData(r);
-        const k = Object.keys(r.nodes)[0];
-        setActiveTab(k);
       })
       .catch((err) => {
         if (err.status === 403) navigate("/login");
@@ -120,6 +118,7 @@ export const Admin: FC = () => {
           onChange={(d) => {
             setActiveTab(d.target.value);
           }}
+          defaultValue="all"
         >
           {Object.keys(data.nodes).map((k) => (
             <option value={k}>{k}</option>

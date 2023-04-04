@@ -1,7 +1,7 @@
 import asyncio
 import json
 import re
-from functools import partial
+from functools import partial, reduce
 from json import JSONDecodeError
 from typing import Awaitable, Literal
 from uuid import uuid4
@@ -13,6 +13,7 @@ from fastapi.responses import JSONResponse
 from app import app
 from app.models.user import User
 from app.utils.cache import async_cache
+from app.utils.func import node_sum, get_empty_node
 from app.utils.time import HOUR
 from config import MARZBAN_SERVERS, redis_connection
 
@@ -196,10 +197,13 @@ async def admin(response: Response, authorization: str | None = Header()):
     if not results:
         return JSONResponse(content={'detail': "no users available"}, status_code=status.HTTP_404_NOT_FOUND)
 
-    return {
+    data = {
         "nodes": {
             r.url.host: {
                 "users": r.json()
             } for r in results
         }
     }
+
+    data['nodes']['all'] = reduce(node_sum, list(data['nodes'].values()), get_empty_node())
+    return data
