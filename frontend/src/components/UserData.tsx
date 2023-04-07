@@ -26,6 +26,7 @@ import {
   CheckIcon,
   ClipboardIcon,
   ShieldExclamationIcon,
+  LinkIcon,
 } from "@heroicons/react/24/outline";
 
 const iconProps = {
@@ -37,6 +38,7 @@ const iconProps = {
 const CopyIcon = chakra(ClipboardIcon, iconProps);
 const CopiedIcon = chakra(CheckIcon, iconProps);
 const CensorshipCheckIcon = chakra(ShieldExclamationIcon, iconProps);
+const SubscriptionLinkIcon = chakra(LinkIcon, iconProps);
 
 type DataRowProps = { fieldName: string } & BoxProps;
 const DataRow: FC<DataRowProps> = ({ children, fieldName, ...props }) => (
@@ -197,6 +199,41 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
                           <CopiedIcon w="40px" h="40px" />
                         ) : (
                           <CopyIcon w="40px" h="40px" />
+                        )}
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                </CopyToClipboard>
+                <CopyToClipboard
+                  text={user.subscription_url}
+                  onCopy={() => {
+                    setCopied([200, true]);
+                  }}
+                >
+                  <div>
+                    <Tooltip
+                      label={
+                        copied[0] === 200 && copied[1]
+                          ? "Copied"
+                          : "Copy Subscription"
+                      }
+                      placement="top"
+                    >
+                      <IconButton
+                        w="60px"
+                        h="60px"
+                        aria-label="copy subscription"
+                        variant="outline"
+                        _dark={{
+                          _hover: {
+                            bg: "gray.800",
+                          },
+                        }}
+                      >
+                        {copied[0] === 0 && copied[1] ? (
+                          <CopiedIcon w="40px" h="40px" />
+                        ) : (
+                          <SubscriptionLinkIcon w="40px" h="40px" />
                         )}
                       </IconButton>
                     </Tooltip>
