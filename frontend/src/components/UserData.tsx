@@ -230,7 +230,7 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
                           },
                         }}
                       >
-                        {copied[0] === 0 && copied[1] ? (
+                        {copied[0] === 200 && copied[1] ? (
                           <CopiedIcon w="40px" h="40px" />
                         ) : (
                           <SubscriptionLinkIcon w="40px" h="40px" />
