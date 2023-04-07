@@ -120,18 +120,21 @@ async def info(response: Response, authorization: str | None = Header(), marzban
         return {"detail": "permission denied"}
 
     resp_data = resp.json()
-    links = resp_data.get('links', [])
-
-    matcher = await find_sni(links)
-    if not matcher:
-        return JSONResponse(content={'detail': "No correct sni found"}, status_code=status.HTTP_501_NOT_IMPLEMENTED)
-    sni = matcher.groups()[0]
-
-    corrected_links = await assure_sni(links, sni)
+    links: list[str] = resp_data.get('links', [])
+    if MARZBAN_SERVERS.get(marzbanserver, {}).get('random_sni', False):
+        randomized_sni_links = []
+        random_sni = uuid4().hex[:10]
+        for link in links:
+            if link.startswith('vless') and (searcher := re.search('sni=([^&]+)', link)):
+                domain = searcher[1].split('.', 1)[1]
+                randomized_sni_links.append(re.sub("sni=[^&]+", f"sni={random_sni}.{domain}", link))
+            else:
+                randomized_sni_links.append(link)
+        links = randomized_sni_links
 
     return {
         **resp_data,
-        "links": corrected_links,
+        "links": links,
     }
 
 
