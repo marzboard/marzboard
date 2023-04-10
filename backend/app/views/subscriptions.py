@@ -1,20 +1,8 @@
-import asyncio
-import json
-import re
-from functools import partial
-from json import JSONDecodeError
-from typing import Awaitable, Literal
-from uuid import uuid4
-
 import httpx
-from fastapi import status, Response, Header
-from fastapi.responses import JSONResponse
+from fastapi import Response
 
 from app import app
-from app.models.user import User
-from app.utils.cache import async_cache
-from app.utils.time import HOUR
-from config import MARZBAN_SERVERS, redis_connection
+from config import MARZBAN_SERVERS
 
 
 @app.get("/{node}/sub/{token}")

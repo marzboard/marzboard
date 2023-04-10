@@ -10,10 +10,20 @@ from app import app
 
 @app.get("/censorship-status/")
 async def censorship_status(marzbanserver: str | None = Header()):
-    node_domain = MARZBAN_SERVERS.get(marzbanserver, {}).get("node_domain")
+    node = MARZBAN_SERVERS.get(marzbanserver, {})
+    if not node:
+        return JSONResponse(content={'detail': "wrong marzbanserver"}, status_code=status.HTTP_403_FORBIDDEN)
+
+    if node.get("random_sni", False):
+        return {"random_sni": True}
+
+    node_domain = node.get("node_domain")
     if not node_domain:
         print(f'[BOARD WARNING] NodeDomain is not provided with this marzbanserver: {marzbanserver}')
-        return JSONResponse(content={'detail': "wrong marzbanserver"}, status_code=status.HTTP_403_FORBIDDEN)
+        return JSONResponse(
+            content={'detail': "node domain not provided"},
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
     async with httpx.AsyncClient(timeout=20) as client:
         params = {'host': node_domain, 'node': [

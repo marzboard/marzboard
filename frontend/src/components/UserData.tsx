@@ -84,8 +84,17 @@ export const UserData: FC<UserDataProps> = ({ user, ...props }) => {
   const checkCensorshipStatus = () => {
     setCheckingCensorshipStatus(true);
     fetch("/censorship-status/")
-      .then(({ is_censored }) => {
-        if (is_censored)
+      .then(({ is_censored, random_sni }) => {
+        if (random_sni)
+          toast({
+            title: "Random-SNI technology",
+            description:
+              "Your service uses Random-SNI technology. So this button is not for you! ",
+            status: "info",
+            duration: 9000,
+            isClosable: true,
+          });
+        else if (is_censored)
           toast({
             title: "Your node is Censored :(",
             description:
