@@ -20,6 +20,9 @@ from config import MARZBAN_SERVERS, redis_connection
 @app.get("/{node}/sub/{token}")
 async def subscriptions(node, token):
     the_node = next(filter(lambda n: node in n, MARZBAN_SERVERS.keys()), None)
+    if not the_node:
+        return Response({"detail": f"wrong node name. '{node}' is not provided."}, status_code=401)
+
     async with httpx.AsyncClient(timeout=10) as client:
         client: httpx.AsyncClient
         try:
