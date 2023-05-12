@@ -94,7 +94,7 @@ async def login(user: User, response: Response):
     if res is None:
         return JSONResponse(content={'detail': "User not found"}, status_code=status.HTTP_404_NOT_FOUND)
 
-    port = '' if res.url.port and res.url.port in [80, 443] else f':{res.url.port}'
+    port = '' if not res.url.port or res.url.port in [80, 443] else f':{res.url.port}'
     user_marzbanserver = f"{res.url.scheme}://{res.url.host}{port}"
     return {
         **res.json(),
